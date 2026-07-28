@@ -1,0 +1,434 @@
+{
+  "name": "job-application-automation",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -48,
+        -160
+      ],
+      "id": "bf17181b-639e-439a-9165-4f6aed492ca6",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://serpapi.com/search.json?engine=google_maps&q=engineering+companies+in+Riyadh&type=search&ll=@24.7136,46.6753,11z&api_key=ff6773534da9a9f644472a78fa00280",
+        "options": {
+          "allowUnauthorizedCerts": true,
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -48,
+        0
+      ],
+      "id": "d151bb56-b97b-40d3-994b-0cc13ed01260",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "maxItems": 15
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        224,
+        -176
+      ],
+      "id": "87f50d74-be69-4e8b-84de-23448e74e097",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        256,
+        32
+      ],
+      "id": "576b83ec-feec-4101-aa61-d65f12ffbe9b",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.website }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        256,
+        176
+      ],
+      "id": "b9c89afd-d09f-4520-934a-2a63e8c4914a",
+      "name": "site",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        256,
+        544
+      ],
+      "id": "4bb5610a-c251-424c-9c48-b2838d277e4a",
+      "name": "Wait",
+      "webhookId": "538d71ff-fa07-4e63-829c-305066c6182a"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        464,
+        -176
+      ],
+      "id": "d430b12d-130a-46af-b223-f8cf465a8ae5",
+      "name": "Wait1",
+      "webhookId": "1a8d99b9-871c-4bf8-a343-e319611392ff"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "c67dc280-c075-41f8-ad6c-f45caedb979b",
+              "leftValue": "={{ $json.name }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "9058db7d-0fa8-4e0e-89df-00f0bcf46148",
+              "leftValue": "={{ $json.email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        464,
+        -16
+      ],
+      "id": "9bd7c9fb-cdb7-4a14-a3a8-cb6a9e15a8d9",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "name, email",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        480,
+        208
+      ],
+      "id": "bc2102ac-5459-4e3c-9ea9-9f70ce4f506e",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "18rJtWOc_Hxqg8LS95kgEnGKu6KGZSx_s79HO_blEnUE",
+          "mode": "list",
+          "cachedResultName": "Hr",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18rJtWOc_Hxqg8LS95kgEnGKu6KGZSx_s79HO_blEnUE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18rJtWOc_Hxqg8LS95kgEnGKu6KGZSx_s79HO_blEnUE/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "email": "={{ $json.email }}",
+            "first name": "={{ $json.name }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "first name",
+              "displayName": "first name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        480,
+        448
+      ],
+      "id": "ee7c61f3-efd7-46cf-8873-14a9de049968",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YMVtCHrlkqZgHmlG",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const original = $(\"Loop Over Items\").item.json;\n\nreturn {\n  json: {\n    ...original,\n    data: $input.item.json.data\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        256,
+        352
+      ],
+      "id": "62309316-8905-4fc1-b0c4-42d812d17234",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json.data || ''\nconst originalName = $input.first().json.name || ''\n\n// استخراج الإيميلات\nconst emailRegex = /[a-zA-Z0-9._%+\\-]+@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]{2,}/g\nconst emails = input.match(emailRegex) || []\n\n// فلترة الإيميلات\nconst filtered = emails.filter(email => {\n  const e = email.toLowerCase()\n\n  return (\n    !e.includes('example.com') &&\n    !e.includes('wixpress') &&\n    !e.includes('sentry') &&\n    !e.includes('.png') &&\n    !e.includes('.jpg') &&\n    !e.includes('.jpeg') &&\n    !e.includes('.svg') &&\n    !e.includes('noreply') &&\n    !e.includes('no-reply')\n  )\n})\n\n// إزالة التكرار\nconst uniqueEmails = [...new Set(filtered)]\n\nreturn [{\n  json: {\n    name: originalName,\n    email: uniqueEmails[0] || ''\n  }\n}]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        256,
+        768
+      ],
+      "id": "24b91a28-49d8-47da-94a4-d1aceb952b4f",
+      "name": "Code in JavaScript3",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json.body || $input.first().json\nconst items = data.local_results || []\n\nreturn items.map(place => ({\n  json: {\n    name: place.title || '',\n    website: place.website || '',\n    phone: place.phone || '',\n    address: place.address || '',\n    rating: place.rating || '',\n    reviews: place.reviews || ''\n  }\n}))"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -32,
+        224
+      ],
+      "id": "c23cba72-eeab-47f5-9db3-3be2bc61044b",
+      "name": "Code in JavaScript1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "site",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "site": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript3": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "a2b92c7e-da88-4678-9214-2b91bc56e5eb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "dfd87da6177f1a01efdec8d5d6671fe9b57a6ae1c9eecb4e9cc6e68583763aeb"
+  },
+  "nodeGroups": [],
+  "id": "FLnYdXqpp3iz0K0N",
+  "tags": []
+}
